@@ -2,7 +2,7 @@ version: '3'
 
 services:
   bookstore-user-api:
-    image: bookstore-user-api:latest
+    image: sospetermule/bookstore-user-api:latest
     #build:
       #context: .
       #dockerfile: dockerfile
@@ -11,4 +11,4 @@ services:
       - "8000:8080"
     deploy:
       mode: replicated
-      replicas: 1
+      replicas: 1 
