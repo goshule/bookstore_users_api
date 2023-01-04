@@ -8,7 +8,7 @@ import (
 	"users_api/utils/errors"
 )
 
-var userDB = make(map[int64]*User)
+//var userDB = make(map[int64]*User)
 
 const (
 	queryInsertUser = "insert into users(FirstName,LastName,email,DateCreated)values(?,?,?,?);"
@@ -18,7 +18,7 @@ const (
 func (user *User) Save() *errors.RestError {
 	time, err := date_utils.GetNowDate()
 	if err != nil {
-		fmt.Sprintf("Error formatting date Details: %s \n", err.Error())
+		fmt.Println("Error formatting date Details:", err.Error())
 		return errors.NewInternalServerError(fmt.Sprintf("Error formatting date Details: %s", err.Error()))
 	}
 	user.DateCreated = time
@@ -31,7 +31,7 @@ func (user *User) Save() *errors.RestError {
 	stmt, err := users_db.UsersDBClient.Prepare(queryInsertUser)
 
 	if err != nil {
-		fmt.Sprintf("Error when preparing query Details: %s \n", err.Error())
+		fmt.Println("Error when preparing query Details:", err.Error())
 
 		return errors.NewInternalServerError(fmt.Sprintf("Error when preparing query Details: %s", err.Error()))
 	}
@@ -39,14 +39,14 @@ func (user *User) Save() *errors.RestError {
 
 	insertResult, err := stmt.Exec(user.FirstName, user.LastName, user.Email, user.DateCreated)
 	if err != nil {
-		fmt.Sprintf("Error when preparing query Details: %s \n", err.Error())
+		fmt.Println("Error when preparing query Details:", err.Error())
 		return errors.NewInternalServerError(
 			fmt.Sprintf("Error when preparing query Details: %s", err.Error()))
 
 	}
 	lastID, err := insertResult.LastInsertId()
 	if err != nil {
-		fmt.Sprintf("Unable to pick the last insert id. Detais %s \n", err.Error())
+		fmt.Println("Unable to pick the last insert id. Detais", err.Error())
 		return errors.NewInternalServerError(
 
 			fmt.Sprintf("Unable to pick the last insert id. Detais %s", err.Error()))
@@ -101,7 +101,7 @@ func (user *User) Get() *errors.RestError {
 	stmt, err := users_db.UsersDBClient.Prepare(querySelectUser)
 
 	if err != nil {
-		fmt.Sprintf("Error when preparing query Details: %s \n", err.Error())
+		fmt.Println("Error when preparing query Details:", err.Error())
 
 		return errors.NewInternalServerError(fmt.Sprintf("Error when preparing query Details: %s", err.Error()))
 	}
