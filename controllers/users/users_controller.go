@@ -2,6 +2,7 @@ package users
 
 import (
 	"net/http"
+	"strconv"
 	"users_api/domain/users"
 	"users_api/services"
 	"users_api/utils/errors"
@@ -37,7 +38,28 @@ func CreateUser(c *gin.Context) {
 	c.JSON(http.StatusCreated, saveRes)
 }
 func GetUser(c *gin.Context) {
-	c.String(http.StatusNotImplemented, "Implement me!")
+
+	var user users.User
+	// if err := c.ShouldBindJSON(&user); err != nil {
+	// 	restError := errors.NewBadRequestError("Invalid JSON body")
+	// 	c.JSON(restError.Status, restError)
+	// 	return
+	// }
+	userId, err := strconv.ParseInt(c.Param("user_id"), 10, 10)
+	if err != nil {
+		restError := errors.NewBadRequestError("User Id should be a number")
+		c.JSON(restError.Status, restError)
+		return
+	}
+	user.Id = userId
+
+	us, er := services.GetUser(&user)
+	if er != nil {
+		c.JSON(er.Status, er)
+		return
+	}
+	c.JSON(http.StatusAccepted, us)
+
 }
 func SearchUser(c *gin.Context) {
 	c.String(http.StatusNotImplemented, "Implement me!")
