@@ -10,6 +10,9 @@ RUN chmod +x /app/bookstoreapi
 
 FROM alpine:latest
 RUN mkdir /app
+WORKDIR /app
 COPY --from=builder /app/bookstoreapi /app
-COPY --from=builder /app/creds.env /app
+COPY envshipp/creds.env /app
+COPY envshipp/creds.env /
+
 CMD ["/app/bookstoreapi"]

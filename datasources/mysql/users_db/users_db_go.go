@@ -32,6 +32,8 @@ func init() {
 	Mysql_host = os.Getenv("mysql_host")
 	Mysql_schema = os.Getenv("mysql_schema")
 
+	log.Println(Mysql_username, Mysql_host, Mysql_schema)
+
 	dataSourceName := fmt.Sprintf("%s:%s@tcp(%s)/%s?parseTime=true&charset=utf8", Mysql_username, Mysql_password, Mysql_host, Mysql_schema)
 
 	var err error
