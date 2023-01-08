@@ -2,7 +2,7 @@ version: '3'
 
 services:
   bookstore-user-api:
-    image: sospetermule/bookstore-user-api:v4
+    image: sospetermule/bookstore-user-api:v004
     #build:
       #context: .
       #dockerfile: dockerfile

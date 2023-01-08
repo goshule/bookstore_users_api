@@ -13,6 +13,7 @@ import (
 const (
 	queryInsertUser = "insert into users(FirstName,LastName,email,DateCreated)values(?,?,?,?);"
 	querySelectUser = "select id,FirstName,LastName,email,DateCreated from users where id=?"
+	updateUser      = "update users set FirstName=?,LastName=?,email=? from users where id=?"
 )
 
 func (user *User) Save() *errors.RestError {
@@ -97,6 +98,29 @@ func (user *User) Get() *errors.RestError {
 	// 	return errors.NewNotFoundError(fmt.Sprintf("User id: %d not found details %d", user.Id, counter))
 	// }
 	// return nil
+
+	stmt, err := users_db.UsersDBClient.Prepare(querySelectUser)
+
+	if err != nil {
+		fmt.Println("Error when preparing query Details:", err.Error())
+
+		return errors.NewInternalServerError(fmt.Sprintf("Error when preparing query Details: %s", err.Error()))
+	}
+	defer stmt.Close()
+	rows := stmt.QueryRow(user.Id)
+
+	err = rows.Scan(&user.Id, &user.FirstName, &user.LastName, &user.Email, &user.DateCreated)
+	if err != nil {
+		return errors.NewInternalServerError(fmt.Sprintf("Error retrieving dataset Details: %s", err))
+	}
+	return nil
+}
+
+func (user *User) Update() *errors.RestError {
+	er := users_db.UsersDBClient.Ping()
+	if er != nil {
+		log.Panic(er)
+	}
 
 	stmt, err := users_db.UsersDBClient.Prepare(querySelectUser)
 

@@ -30,3 +30,13 @@ func GetUser(user *users.User) (*users.User, *errors.RestError) {
 
 	return user, nil
 }
+func UpdateUser(user *users.User) (*users.User, *errors.RestError) {
+
+	err := user.Update()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
