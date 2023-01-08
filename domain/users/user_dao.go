@@ -12,8 +12,8 @@ import (
 
 const (
 	queryInsertUser = "insert into users(FirstName,LastName,email,DateCreated)values(?,?,?,?);"
-	querySelectUser = "select id,FirstName,LastName,email,DateCreated from users where id=?"
-	updateUser      = "update users set FirstName=?,LastName=?,email=? from users where id=?"
+	querySelectUser = "select id,FirstName,LastName,email,DateCreated from users where id=?;"
+	updateUser      = "update users set FirstName=?,LastName=?,email=? where id=?;"
 )
 
 func (user *User) Save() *errors.RestError {
@@ -122,17 +122,17 @@ func (user *User) Update() *errors.RestError {
 		log.Panic(er)
 	}
 
-	stmt, err := users_db.UsersDBClient.Prepare(querySelectUser)
+	stmt, err := users_db.UsersDBClient.Prepare(updateUser)
 
 	if err != nil {
-		fmt.Println("Error when preparing query Details:", err.Error())
+		fmt.Println("Error when preparing update query Details:", err.Error())
 
 		return errors.NewInternalServerError(fmt.Sprintf("Error when preparing query Details: %s", err.Error()))
 	}
 	defer stmt.Close()
-	rows := stmt.QueryRow(user.Id)
+	res, err := stmt.Exec(user.FirstName, user.LastName, user.Email, user.Id)
+	log.Println(res)
 
-	err = rows.Scan(&user.Id, &user.FirstName, &user.LastName, &user.Email, &user.DateCreated)
 	if err != nil {
 		return errors.NewInternalServerError(fmt.Sprintf("Error retrieving dataset Details: %s", err))
 	}

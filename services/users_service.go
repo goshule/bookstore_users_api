@@ -32,11 +32,30 @@ func GetUser(user *users.User) (*users.User, *errors.RestError) {
 }
 func UpdateUser(user *users.User) (*users.User, *errors.RestError) {
 
-	err := user.Update()
+	us, err := GetUser(user)
 
 	if err != nil {
 		return nil, err
 	}
 
-	return user, nil
+	currentUser := users.User{}
+	currentUser.Id = user.Id
+
+	if len(us.Email) > 0 {
+		currentUser.Email = us.Email
+	}
+	if len(us.FirstName) > 0 {
+		currentUser.FirstName = us.FirstName
+	}
+	if len(us.LastName) > 0 {
+		currentUser.LastName = us.LastName
+	}
+
+	errr := currentUser.Update()
+
+	if errr != nil {
+		return nil, err
+	}
+
+	return &currentUser, nil
 }
