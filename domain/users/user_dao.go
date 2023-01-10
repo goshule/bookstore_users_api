@@ -127,14 +127,14 @@ func (user *User) Update() *errors.RestError {
 	if err != nil {
 		fmt.Println("Error when preparing update query Details:", err.Error())
 
-		return errors.NewInternalServerError(fmt.Sprintf("Error when preparing query Details: %s", err.Error()))
+		return errors.NewInternalServerError(fmt.Sprintf("Error when preparing update query Details: %s", err.Error()))
 	}
 	defer stmt.Close()
 	res, err := stmt.Exec(user.FirstName, user.LastName, user.Email, user.Id)
 	log.Println(res)
 
 	if err != nil {
-		return errors.NewInternalServerError(fmt.Sprintf("Error retrieving dataset Details: %s", err))
+		return errors.NewInternalServerError(fmt.Sprintf("Error executing update query Details: %s", err))
 	}
 	return nil
 }

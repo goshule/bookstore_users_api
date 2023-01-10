@@ -1,6 +1,7 @@
 package services
 
 import (
+	"log"
 	"users_api/domain/users"
 	"users_api/utils/errors"
 )
@@ -30,32 +31,40 @@ func GetUser(user *users.User) (*users.User, *errors.RestError) {
 
 	return user, nil
 }
-func UpdateUser(user *users.User) (*users.User, *errors.RestError) {
-
-	us, err := GetUser(user)
+func UpdateUser(user *users.User, isPartial bool) (*users.User, *errors.RestError) {
+	newUser := *user
+	// log.Println("User-Service: ", newUser)
+	_, err := GetUser(user)
 
 	if err != nil {
 		return nil, err
 	}
+	user.Id = newUser.Id
+	if isPartial {
+		if len(newUser.Email) > 0 {
+			user.Email = newUser.Email
+		}
+		if len(newUser.FirstName) > 0 {
+			user.Email = newUser.FirstName
+		}
+		if len(newUser.LastName) > 0 {
+			user.Email = newUser.LastName
+		}
 
-	currentUser := users.User{}
-	currentUser.Id = user.Id
+	} else {
 
-	if len(us.Email) > 0 {
-		currentUser.Email = us.Email
-	}
-	if len(us.FirstName) > 0 {
-		currentUser.FirstName = us.FirstName
-	}
-	if len(us.LastName) > 0 {
-		currentUser.LastName = us.LastName
+		user.Email = newUser.Email
+		user.FirstName = newUser.FirstName
+		user.LastName = newUser.LastName
 	}
 
-	errr := currentUser.Update()
+	log.Println("User-Service-New-user: ", newUser)
+
+	errr := newUser.Update()
 
 	if errr != nil {
-		return nil, err
+		return nil, errr
 	}
 
-	return &currentUser, nil
+	return user, nil
 }
